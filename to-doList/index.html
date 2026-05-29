@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>To-Do List | Organizador de Actividades</title>
+  <!-- Fuentes modernas desde Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700&family=Playfair+Display:ital,wght@0,500;0,700;1,500&display=swap" rel="stylesheet">
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(145deg, #f4f7fc 0%, #eef2f5 100%);
+      font-family: 'Inter', sans-serif;
+      color: #1e2a3e;
+      line-height: 1.5;
+      scroll-behavior: smooth;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+
+    /* contenedor principal */
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    /* Tarjeta principal estilo biografía */
+    .todo-card {
+      background: #ffffff;
+      border-radius: 2rem;
+      box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.2), 0 4px 12px rgba(0, 0, 0, 0.05);
+      overflow: hidden;
+      transition: transform 0.2s ease;
+    }
+
+    /* encabezado hero */
+    .hero-section {
+      background: linear-gradient(135deg, #1e3c4c 0%, #2b5c6f 100%);
+      padding: 2.5rem 3rem;
+      color: white;
+      text-align: center;
+    }
+
+    .hero-section h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.8rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 0.5rem;
+    }
+
+    .hero-tagline {
+      font-size: 1.1rem;
+      font-weight: 400;
+      opacity: 0.9;
+      margin-top: 0.5rem;
+    }
+
+    .badge-area {
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(4px);
+      padding: 0.6rem 1.2rem;
+      border-radius: 60px;
+      display: inline-block;
+      margin-top: 1rem;
+    }
+
+    .badge-area span {
+      font-weight: 500;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* estadísticas */
+    .stats-section {
+      background: #fefcf5;
+      padding: 1.5rem 3rem;
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      gap: 1rem;
+      border-bottom: 1px solid #f0e7d6;
+    }
+
+    .stat-card {
+      text-align: center;
+      flex: 1;
+      min-width: 100px;
+    }
+
+    .stat-number {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #2b5c6f;
+      font-family: 'Playfair Display', serif;
+    }
+
+    .stat-label {
+      font-size: 0.85rem;
+      color: #6b7f8a;
+      margin-top: 0.3rem;
+    }
+
+    /* formulario agregar */
+    .form-section {
+      padding: 2rem 3rem;
+      background: white;
+      border-bottom: 1px solid #f0e7d6;
+    }
+
+    .input-group {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .input-group input {
+      flex: 1;
+      padding: 1rem 1.2rem;
+      border: 2px solid #e2dccd;
+      border-radius: 1rem;
+      font-size: 1rem;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.3s;
+      background: #fefcf5;
+    }
+
+    .input-group input:focus {
+      outline: none;
+      border-color: #ffc857;
+      box-shadow: 0 0 0 3px rgba(255, 200, 87, 0.1);
+    }
+
+    .btn-agregar {
+      background: linear-gradient(135deg, #2b5c6f 0%, #1e3c4c 100%);
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 1rem;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 600;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-agregar:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    /* lista de tareas */
+    .tareas-section {
+      padding: 2rem 3rem;
+      background: white;
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      font-weight: 600;
+      color: #1e3c4c;
+      margin-bottom: 1.5rem;
+      border-bottom: 3px solid #ffc857;
+      display: inline-block;
+      padding-bottom: 0.3rem;
+    }
+
+    .lista-tareas {
+      list-style: none;
+      margin-top: 1.5rem;
+    }
+
+    .tarea-item {
+      background: #fefcf5;
+      border: 1px solid #f0e7d6;
+      border-radius: 1rem;
+      padding: 1rem 1.2rem;
+      margin-bottom: 0.8rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.3s;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .tarea-item:hover {
+      transform: translateX(5px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+      border-color: #ffc857;
+    }
+
+    .tarea-info {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex: 1;
+      cursor: pointer;
+    }
+
+    .tarea-checkbox {
+      width: 24px;
+      height: 24px;
+      cursor: pointer;
+      accent-color: #ffc857;
+    }
+
+    .tarea-texto {
+      font-size: 1rem;
+      color: #1e2a3e;
+      transition: all 0.3s;
+      word-break: break-word;
+      flex: 1;
+    }
+
+    .tarea-texto.completada {
+      text-decoration: line-through;
+      color: #aaa;
+    }
+
+    .tarea-fecha {
+      font-size: 0.7rem;
+      color: #9aaeb9;
+      margin-left: 0.5rem;
+    }
+
+    .btn-eliminar {
+      background: transparent;
+      color: #ff4757;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 0.8rem;
+      cursor: pointer;
+      font-size: 1.1rem;
+      transition: all 0.2s;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-eliminar:hover {
+      background: #ffe5e7;
+      transform: scale(1.05);
+    }
+
+    /* mensaje vacío */
+    .mensaje-vacio {
+      text-align: center;
+      padding: 3rem;
+      color: #9aaeb9;
+      background: #fefcf5;
+      border-radius: 1rem;
+      margin-top: 1rem;
+    }
+
+    .mensaje-vacio i {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      opacity: 0.5;
+    }
+
+    /* footer */
+    .todo-footer {
+      background: #f9f3e8;
+      padding: 1.2rem 3rem;
+      text-align: center;
+      border-top: 1px solid #eadbc8;
+      font-size: 0.85rem;
+      color: #4f6a75;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    /* responsividad */
+    @media (max-width: 650px) {
+      body {
+        padding: 1rem;
+      }
+      .hero-section {
+        padding: 1.5rem;
+      }
+      .hero-section h1 {
+        font-size: 2rem;
+      }
+      .form-section, .tareas-section, .stats-section {
+        padding: 1.5rem;
+      }
+      .input-group {
+        flex-direction: column;
+      }
+      .btn-agregar {
+        justify-content: center;
+      }
+      .todo-footer {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="todo-card">
+    
+    <!-- Encabezado estilo hero -->
+    <div class="hero-section">
+      <h1><i class="fas fa-check-circle"></i> To-Do List</h1>
+      <div class="badge-area">
+        <span></i> Hecho por Adrian Monroy</span>
+      </div>
+    </div>
+
+    <!-- Estadísticas dinámicas -->
+    <div class="stats-section">
+      <div class="stat-card">
+        <div class="stat-number" id="totalTareas">0</div>
+        <div class="stat-label">Total tareas</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="tareasPendientes">0</div>
+        <div class="stat-label">Pendientes</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="tareasCompletadas">0</div>
+        <div class="stat-label">Completadas</div>
+      </div>
+    </div>
+
+    <!-- Formulario para agregar -->
+    <div class="form-section">
+      <div class="input-group">
+        <input type="text" id="nuevaActividad" placeholder="Escribe una nueva actividad..." autocomplete="off">
+        <button class="btn-agregar" onclick="agregarTarea()">
+          <i class="fas fa-plus-circle"></i> Agregar tarea
+        </button>
+      </div>
+    </div>
+
+    <!-- Lista de tareas -->
+    <div class="tareas-section">
+      <h2 class="section-title">
+        <i class="fas fa-tasks"></i> Mis actividades
+      </h2>
+      <ul class="lista-tareas" id="listaTareas">
+        <!-- Las tareas se cargarán dinámicamente aquí -->
+      </ul>
+    </div>
+
+    <!-- Footer -->
+    <div class="todo-footer">
+      <div>
+        <i class="fas fa-sync-alt"></i> Almacenamiento local
+      </div>
+      <div>
+        <i class="fas fa-copyright"></i> To-Do List · 2025
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Array para almacenar las tareas
+  let tareas = [];
+
+  // Cargar tareas guardadas al iniciar
+  function cargarTareas() {
+    const tareasGuardadas = localStorage.getItem('tareas');
+    if (tareasGuardadas) {
+      tareas = JSON.parse(tareasGuardadas);
+    }
+    renderizarTareas();
+  }
+
+  // Guardar tareas en localStorage
+  function guardarTareas() {
+    localStorage.setItem('tareas', JSON.stringify(tareas));
+  }
+
+  // Agregar nueva tarea
+  function agregarTarea() {
+    const input = document.getElementById('nuevaActividad');
+    const actividad = input.value.trim();
+    
+    if (actividad === '') {
+      alert('Por favor, escribe una actividad');
+      return;
+    }
+    
+    const nuevaTarea = {
+      id: Date.now(),
+      texto: actividad,
+      completada: false,
+      fecha: new Date().toLocaleDateString('es-ES')
+    };
+    
+    tareas.unshift(nuevaTarea); // Agregar al inicio
+    input.value = '';
+    guardarTareas();
+    renderizarTareas();
+  }
+
+  // Alternar estado completada
+  function toggleTarea(id) {
+    const tarea = tareas.find(t => t.id === id);
+    if (tarea) {
+      tarea.completada = !tarea.completada;
+      guardarTareas();
+      renderizarTareas();
+    }
+  }
+
+  // Eliminar tarea
+  function eliminarTarea(id) {
+    tareas = tareas.filter(t => t.id !== id);
+    guardarTareas();
+    renderizarTareas();
+  }
+
+  // Actualizar estadísticas
+  function actualizarEstadisticas() {
+    const total = tareas.length;
+    const completadas = tareas.filter(t => t.completada).length;
+    const pendientes = total - completadas;
+    
+    document.getElementById('totalTareas').textContent = total;
+    document.getElementById('tareasPendientes').textContent = pendientes;
+    document.getElementById('tareasCompletadas').textContent = completadas;
+  }
+
+  // Renderizar lista de tareas
+  function renderizarTareas() {
+    const lista = document.getElementById('listaTareas');
+    
+    if (tareas.length === 0) {
+      lista.innerHTML = `
+        <div class="mensaje-vacio">
+          <i class="fas fa-clipboard-list"></i>
+          <p>✨ No hay tareas aún</p>
+          <p style="font-size: 0.85rem; margin-top: 0.5rem;">Agrega tu primera actividad</p>
+        </div>
+      `;
+      actualizarEstadisticas();
+      return;
+    }
+    
+    lista.innerHTML = tareas.map(tarea => `
+      <li class="tarea-item" data-id="${tarea.id}">
+        <div class="tarea-info" onclick="toggleTarea(${tarea.id})">
+          <input type="checkbox" 
+                 class="tarea-checkbox" 
+                 ${tarea.completada ? 'checked' : ''}
+                 onclick="event.stopPropagation(); toggleTarea(${tarea.id})">
+          <span class="tarea-texto ${tarea.completada ? 'completada' : ''}">
+            ${escapeHtml(tarea.texto)}
+            <span class="tarea-fecha">
+              <i class="fas fa-calendar-alt"></i> ${tarea.fecha}
+            </span>
+          </span>
+        </div>
+        <button class="btn-eliminar" onclick="eliminarTarea(${tarea.id})" title="Eliminar">
+          <i class="fas fa-trash-alt"></i>
+        </button>
+      </li>
+    `).join('');
+    
+    actualizarEstadisticas();
+  }
+
+  // Función para escapar HTML y prevenir XSS
+  function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  // Permitir agregar con Enter
+  document.getElementById('nuevaActividad').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+      agregarTarea();
+    }
+  });
+
+  // Inicializar la aplicación
+  cargarTareas();
+</script>
+</body>
+</html>
